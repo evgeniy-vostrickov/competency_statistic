@@ -11,20 +11,8 @@ use report_competency_statistic\output\report_general;
 
 class report_for_all_competencies extends report_general implements renderable, templatable {
 
-    /** @var int $course_id */
-    protected $course_id;
     /** @var int $user_id */
     protected $user_id;
-    /** @var string $date_start */
-    protected $date_start;
-    /** @var string $date_end */
-    protected $date_end;
-    /** @var string $date_start_stmp */
-    protected $date_start_stmp;
-    /** @var string $date_end_stmp */
-    protected $date_end_stmp;
-    /** @var array $competencies */
-    protected $competencies;
 
     /**
      * Construct this renderable.
@@ -73,9 +61,9 @@ class report_for_all_competencies extends report_general implements renderable, 
           $colors = $this->generateRandomColors(count($my_list_competency));
           $chart_data = array_fill(0, count($my_list_competency), 1);
         } else {
-          $my_list_competency[] = 'Нет освоенных компетенций';
-          $usercompetencycourses[] = 'Нет освоенных компетенций';
-          $colors[] = '#95a5a6';
+          $my_list_competency[] = $this->NOT_COMPETENCIES;
+          $usercompetencycourses[] = $this->NOT_COMPETENCIES;
+          $colors[] = $this->GRAY_COLOR;
           $chart_data[] = 1;
         }
 
@@ -89,11 +77,6 @@ class report_for_all_competencies extends report_general implements renderable, 
         $data->my_list_competency = $my_list_competency;
 
         return $data;
-    }
-
-    private function is_in_period($object): bool {
-        if ($this->date_end_stmp == null || $this->date_start_stmp == null) return true;
-        return $object->get("timecreated") < $this->date_end_stmp && $object->get("timecreated") > $this->date_start_stmp;
     }
 
 }

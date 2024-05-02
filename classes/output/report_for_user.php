@@ -1,6 +1,5 @@
 <?php
 namespace report_competency_statistic\output;
-// require_once('./report_general.php');
 
 use context_course;
 use DateInterval;
@@ -11,8 +10,6 @@ use templatable;
 use renderer_base;
 use stdClass;
 use core_competency\api;
-use core_competency\course_competency;
-use core_competency\user_competency_course;
 // use report_general;
 use tool_lp\external\user_competency_summary_in_course_exporter;
 
@@ -26,16 +23,6 @@ class report_for_user extends report_general implements renderable, templatable 
     protected $course_id;
     /** @var int $user_id */
     protected $user_id;
-    /** @var string $date_start */
-    protected $date_start;
-    /** @var string $date_end */
-    protected $date_end;
-    /** @var string $date_start_stmp */
-    protected $date_start_stmp;
-    /** @var string $date_end_stmp */
-    protected $date_end_stmp;
-    /** @var array $competencies */
-    protected $competencies;
 
     /**
      * Construct this renderable.
@@ -53,12 +40,6 @@ class report_for_user extends report_general implements renderable, templatable 
         if ($date_end_stmp) $this->date_end_stmp = $date_end_stmp->getTimestamp();
         $this->date_end = $date_end;
         $this->context = context_course::instance($courseid);
-
-
-        ///
-        //$this->generateRandomColors();
-
-
     }
 
     /**
@@ -69,7 +50,6 @@ class report_for_user extends report_general implements renderable, templatable 
      */
     public function export_for_template(renderer_base $output) {
         global $DB;
-        $GRAY_COLOR = '#95a5a6';
 
         $data = new stdClass();
         $data->courseid = $this->course_id;
@@ -83,11 +63,8 @@ class report_for_user extends report_general implements renderable, templatable 
         $course = $DB->get_record('course', $params);
 
         $usercompetencycourses = api::list_user_competencies_in_course($course_id, $currentuser);
-        // $competencylist = course_competency::list_competencies($course_id, false);
-        // $existing = user_competency_course::get_multiple($currentuser, $course_id, $competencylist);
-        // print_r($existing);
         $COLORS = $this->generateRandomColors(count($usercompetencycourses)); // Получает массив цветов столько же сколько есть пользовательских компетенций курса.
-        $COLORS[] = $GRAY_COLOR; // Серый цвет для обозночения невыполненных заданий.
+        $COLORS[] = $this->GRAY_COLOR; // Серый цвет для обозночения невыполненных заданий.
 
         $modinfo = get_fast_modinfo($course, $currentuser);// для отладки
 
@@ -114,7 +91,6 @@ class report_for_user extends report_general implements renderable, templatable 
                     $success += 1;
                 } else {
                     $cm = $modinfo->get_cm($competency_modulecomp->cmid);
-//                    $mod = $DB->get_record($cm->modname, array('id' => $cm->instance), '*', MUST_EXIST);
                     $grades = grade_get_grades($course_id, 'mod', $cm->modname, $cm->instance, $currentuser);
                     $item_grades = $grades->items[0]->grades;
                     if (!empty($grades) && count($grades->items) > 0 && count($grades->items[0]->grades) > 0 && $item_grades[array_keys($item_grades)[0]]->grade != null) {
@@ -135,7 +111,7 @@ class report_for_user extends report_general implements renderable, templatable 
                 $count_untapped_compet++;
             }
         }
-        $labels[] = "Не выполнено";
+        $labels[] = $this->NOT_DONE;
 
         $success_all = 0; // Успешно закрытые или выполненные компетенции по каждому разделу.
         $total_all = 0; // Всего компетенций по всем разделам курса (каждый курс включает список компетенций).
@@ -384,11 +360,4 @@ class report_for_user extends report_general implements renderable, templatable 
         }
         return $competencies_data;
     }
-
-    // Добавлена функция работы с периодом
-    private function is_in_period($object): bool {
-        if ($this->date_end_stmp == null || $this->date_start_stmp == null) return true;
-        return $object->get("timecreated") < $this->date_end_stmp && $object->get("timecreated") > $this->date_start_stmp;
-    }
-
 }

@@ -1,7 +1,6 @@
 <?php
 namespace report_competency_statistic\output;
 
-use context_course;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -11,7 +10,6 @@ use renderer_base;
 use stdClass;
 use core_competency\api;
 use tool_lp\external\user_competency_summary_in_course_exporter;
-use core_competency\user_competency;
 use report_competency_statistic\output\report_general;
 
 class report_for_all_course extends report_general implements renderable, templatable {
@@ -20,16 +18,6 @@ class report_for_all_course extends report_general implements renderable, templa
     protected $course_id;
     /** @var int $user_id */
     protected $user_id;
-    /** @var string $date_start */
-    protected $date_start;
-    /** @var string $date_end */
-    protected $date_end;
-    /** @var string $date_start_stmp */
-    protected $date_start_stmp;
-    /** @var string $date_end_stmp */
-    protected $date_end_stmp;
-    /** @var array $competencies */
-    protected $competencies;
 
     /**
      * Construct this renderable.
@@ -115,8 +103,8 @@ class report_for_all_course extends report_general implements renderable, templa
         $colors = array_slice($COLORS, 0, count($labels)); // Получает массив цветов столько же сколько есть пользовательских компетенций курса.
 
         if (count($labels) == 0) {
-            $labels[] = 'Нет освоенных компетенций';
-            $colors[] = '#95a5a6';
+            $labels[] = $this->NOT_COMPETENCIES;
+            $colors[] = $this->GRAY_COLOR;
             $chart_data[] = 1;
         }
 
@@ -282,11 +270,6 @@ class report_for_all_course extends report_general implements renderable, templa
         }
 
         return [$competencies_dates, $dates_labels];
-    }
-
-    private function is_in_period($object): bool {
-        if ($this->date_end_stmp == null || $this->date_start_stmp == null) return true;
-        return $object->get("timecreated") < $this->date_end_stmp && $object->get("timecreated") > $this->date_start_stmp;
     }
 
 }
