@@ -1,0 +1,49 @@
+<h3>Сформированные компетенции за все время обучения</h3>
+<!--{{^date_start}}<a href="#" id="choose_dates">Указать период</a>{{/date_start}}
+<div id="dates" style="{{^date_start}}display: none;{{/date_start}}">
+    <form>
+        <input type="hidden" name="user_id" value="{{currentuser}}">
+        <input type="date" name="date_start" value="{{date_start}}" placeholder="Начало"/>
+        <input type="date" name="date_end" value="{{date_end}}" placeholder="Конец"/>
+        <input type="submit" value="Применить" class="btn btn-primary" style="height: 30px; line-height: 16px;">
+    </form>
+</div>
+<br/>
+-->
+<div style="display: flex;">
+    <div style="width: 100%">
+        <canvas id="allComp" height="400" style="margin: auto; width: 60%;"></canvas>
+    </div>
+</div>
+<br/>
+
+<h2 style="text-align: center; font-weight: 500; margin-top: 70px;">Список освоенных компетенций</h3>
+<ol class="rounded">
+    {{#my_list_competency}}
+        <li><a href="#">{{.}}</a></li>
+    {{/my_list_competency}}
+</ol>
+
+<script>
+    const ctx = document.getElementById('allComp');
+    const myChart = new Chart(ctx, {
+        type: 'polarArea',
+        data: {
+            labels: {{&labels}},
+            datasets: [{
+                label: 'Задания',
+                data: {{chart_data}},
+                backgroundColor: {{&colors}},
+                hoverOffset: 10
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    display: false,
+                }
+            }
+        }
+    });
+</script>
+<br/>

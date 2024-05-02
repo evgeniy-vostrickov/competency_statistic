@@ -1,0 +1,119 @@
+<h3>Выполнение заданий по компетенциям</h3>
+<!--{{^date_start}}<a href="#" id="choose_dates">Указать период</a>{{/date_start}}
+<div id="dates" style="{{^date_start}}display: none;{{/date_start}}">
+    <form>
+        <input type="hidden" name="user_id" value="{{currentuser}}">
+        <input type="hidden" name="id" value="{{courseid}}">
+        <input type="date" name="date_start" value="{{date_start}}" placeholder="Начало"/>
+        <input type="date" name="date_end" value="{{date_end}}" placeholder="Конец"/>
+        <input type="submit" value="Применить" class="btn btn-primary" style="height: 30px; line-height: 16px;">
+    </form>
+</div>
+<br/>
+-->
+<div style="display: flex;">
+    <div style="width: 100%">
+        <canvas id="allComp1" height="400" style="margin: auto; width: 60%;"></canvas>
+    </div>
+    <div style="width: 100%">
+        <canvas id="allComp2" height="400" style="margin: auto; width: 70%;"></canvas>
+    </div>
+</div>
+<br/>
+<script>
+    const ctx = document.getElementById('allComp1');
+    const myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: {{&labels}},
+            datasets: [{
+                label: 'Задания',
+                data: {{chart_data_doughnut}},
+                backgroundColor: {{&colors_doughnut}},
+                hoverOffset: 10
+            }]
+        },
+    });
+</script>
+<script>
+    const ctx1 = document.getElementById('allComp2');
+    const myChart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: {{&labels}},
+            datasets: [{
+                label: 'Задания',
+                data: {{chart_data}},
+                backgroundColor: {{&colors}},
+            }]
+        },
+    });
+</script>
+<br/>
+
+<h3>Прогресс выполнения заданий по компетенциям</h3>
+<br/>
+<div style="width: 100%;">
+    <canvas id="allComp3" style="width: 100%;" height="400"></canvas>
+</div>
+
+<script>
+    const ctx2 = document.getElementById('allComp3');
+    const myChart2 = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: {{&dates_labels}},
+            datasets: [
+                {{#competencies_dates}}
+                {
+                    label: '{{competency_name}}',
+                    fill: true,
+                    data: {{dates_values}},
+                    borderColor: '{{color}}',
+                    backgroundColor: '{{color}}22'
+                },
+                {{/competencies_dates}}
+            ]
+        },
+    });
+
+    document.getElementById('choose_dates').onclick = function () {
+        document.getElementById('dates').style.display = 'block';
+        this.style.display = 'none';
+    };
+</script>
+<br/><br/>
+<h3>Сформированность компетенций:</h3>
+
+{{#competencies_data}}
+    <h4>{{competency_name}}</h4>
+    {{#extra_data}}
+    {{#usercompetencysummary}}
+        {{#evidence}}
+            {{#grade}}
+                <p><span class="badge badge-info">{{gradename}}</span></p>
+            {{/grade}}
+            <p>{{description}}</p>
+        {{/evidence}}
+    {{/usercompetencysummary}}
+    {{/extra_data}}
+    <h5>Выполненные задания:</h5>
+    <ul>
+        {{#modules}}
+            <li><a href="{{url}}">{{name}}</a></li>
+        {{/modules}}
+    </ul>
+    <br/>
+{{/competencies_data}}
+{{#competencies_data_unfinished.0}}
+<h3>Задания, которые следует выполнить:</h3>
+<br/>
+{{/competencies_data_unfinished.0}}
+{{#competencies_data_unfinished}}
+    <h4>{{competency_name}}</h4>
+    <ul>
+        {{#modules}}
+            <li><a href="{{url}}">{{name}}</a></li>
+        {{/modules}}
+    </ul>
+{{/competencies_data_unfinished}}

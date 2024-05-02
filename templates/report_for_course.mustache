@@ -1,0 +1,22 @@
+<table class="generaltable boxaligncenter" id="outlinetable">
+    <tr>
+        <th>Студент</th>
+        <th>Сформированность компетенций</th>
+        <th>Выполнение заданий</th>
+        <th>Статистика</th>
+    </tr>
+    {{#students}}
+        <tr>
+            <td>{{&name}}</td>
+            <td>{{&progress}}</td>
+            <td>{{&progress_modules}}</td>
+            <td>
+                {{&link}}
+                </br>
+                {{&link_all_courses}}
+                </br>
+                {{&link_all_competencies}}
+            </td>
+        </tr>
+    {{/students}}
+</table>
