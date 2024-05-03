@@ -10,7 +10,7 @@ function report_competency_statistic_extend_navigation($reportnav, $course, $con
     $reportnav->add(get_string('reportname', 'report_competency_statistic'), $url);
 }
 
-function report_competency_statistic_extend_navigation_user($navigation, $user, $context, $course, $coursecontext) {
+function report_competency_statistic_extend_navigation_user($navigation, $user, $course) {
     $url = new moodle_url('/report/competency_statistic/index.php', array('id'=>$course->id, 'user_id'=>$user->id));
     $navigation->add(get_string('reportname', 'report_competency_statistic'), $url);
     $url = new moodle_url('/report/competency_statistic/index.php', array('user_id'=>$user->id));
