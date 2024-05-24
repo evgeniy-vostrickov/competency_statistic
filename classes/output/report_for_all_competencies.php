@@ -56,6 +56,9 @@ class report_for_all_competencies extends report_general implements renderable, 
         if (count($my_list_competency) != 0) {
           for($i = 0; $i < count($my_list_competency); $i++) {
             $usercompetencycourses[$i] = mb_strimwidth($my_list_competency[$i], 0, 100, "...");
+            // preg_match('/\b(\d{2,3})\b$/', $usercompetencycourses[$i], $matches);
+            // $number = $matches[1];
+            // $chart_data[$i] = rand(61, 100);
           }
   
           $colors = $this->generateRandomColors(count($my_list_competency));

@@ -45,3 +45,11 @@
 	border-radius: 2em;
 	transition: all .3s ease-out;
 }
+
+.chart-wrapper {
+	display: flex;
+}
+
+@media (max-width: 1024px) {
+	.chart-wrapper { flex-wrap: wrap; }
+}
