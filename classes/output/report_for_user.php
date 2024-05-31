@@ -164,7 +164,7 @@ class report_for_user extends report_general implements renderable, templatable 
 
             if (!$this->is_in_period($competency)) continue;
 
-            $competency_name = mb_strimwidth(strip_tags($competency->get("description")), 0, 30, "...");
+            $competency_name = strip_tags($competency->get("description"));
 
             $competency_data = new stdClass();
             $competency_data->competency_name = $competency_name; // Название компетенции.
@@ -252,7 +252,9 @@ class report_for_user extends report_general implements renderable, templatable 
         //С начальной даты, до текущей, для каждого дня.
         $begin = new DateTime();
         $begin->setTimestamp($min_date);
+        $begin->modify('-10 days');
         $end = new DateTime();
+        $end->modify('+10 days');
         $interval = DateInterval::createFromDateString('1 day');
         $period = new DatePeriod($begin, $interval, $end);
 
@@ -262,6 +264,7 @@ class report_for_user extends report_general implements renderable, templatable 
             $dates_labels[] = $dt->format("Y-m-d");
         }
 
+        $end->modify('-10 days');
         $period = new DatePeriod($begin, $interval, $end);
 
         // Перебираем даты формирования подкомпетенций в модулях (на каждом цикле берется массив дат закрытия модулей).

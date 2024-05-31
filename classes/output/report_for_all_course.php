@@ -75,7 +75,7 @@ class report_for_all_course extends report_general implements renderable, templa
                 $proficiency = $usercompetencycourse->get('proficiency');
                 if ($proficiency == '0' || $proficiency == '1') {
                     $competency = $usercompetencycourse->get_competency();
-                    $competency_description = mb_strimwidth(strip_tags($competency->get("description")), 0, 30, "...");
+                    $competency_description = mb_strimwidth(strip_tags($competency->get("description")), 0, 50, "...");
                     if (in_array($competency_description, $labels)) {
                         $key = array_search($competency_description, $labels);
                         $chart_data[$key] += 1;
@@ -92,7 +92,28 @@ class report_for_all_course extends report_general implements renderable, templa
             $this->get_completed_modules_dates($competencies_dates, $usercompetencycourses, $currentuser, $modinfo, $course_id, $DB);
         }
 
-        $buf = $this->prepare_competencies_by_dates($competencies_dates);
+        $unique_competencies = [];
+
+        foreach ($competencies_dates as $competency) {
+            $name = $competency->competency_name;
+
+            if (!isset($unique_competencies[$name])) {
+                $unique_competencies[$name] = (object) [
+                    'competency_name' => $name,
+                    'dates_values' => [],
+                ];
+            }
+
+            $unique_competencies[$name]->dates_values = array_merge(
+                $unique_competencies[$name]->dates_values,
+                $competency->dates_values
+            );
+        }
+
+        // Преобразуем ассоциативный массив обратно в индексированный массив
+        $unique_competencies = array_values($unique_competencies);
+
+        $buf = $this->prepare_competencies_by_dates($unique_competencies);
         $data->competencies_dates = $buf[0];
         $data->dates_labels = json_encode($buf[1]);
 
@@ -231,7 +252,9 @@ class report_for_all_course extends report_general implements renderable, templa
         //С начальной даты, до текущей, для каждого дня.
         $begin = new DateTime();
         $begin->setTimestamp($min_date);
+        $begin->modify('-2 months');
         $end = new DateTime();
+        $end->modify('+1 months');
         $interval = DateInterval::createFromDateString('first day of next month');
         $period = new DatePeriod($begin, $interval, $end);
 
@@ -241,6 +264,7 @@ class report_for_all_course extends report_general implements renderable, templa
             $dates_labels[] = $dt->format("F, Y");
         }
 
+        $end->modify('-1 months');
         $period = new DatePeriod($begin, $interval, $end);
 
         // Перебираем даты формирования подкомпетенций в модулях (на каждом цикле берется массив дат закрытия модулей).

@@ -33,11 +33,13 @@
 </script>
 <br/>
 
+{{#competencies_dates.0}}
 <h3>Прогресс выполнения заданий по компетенциям</h3>
 <br/>
 <div style="width: 100%;">
     <canvas id="allComp2" style="width: 100%;" height="400"></canvas>
 </div>
+{{/competencies_dates.0}}
 
 <script>
     const ctx2 = document.getElementById('allComp2');
@@ -64,7 +66,9 @@
         this.style.display = 'none';
     };
 </script>
+<br/><br/>
 
+{{#competencies_data.0}}
 <h3>Задания, формирующие компетенции:</h3>
 {{#competencies_data}}
     <h4>{{competency_name}}</h4>
@@ -86,3 +90,4 @@
     </ul>
     <br/>
 {{/competencies_data}}
+{{/competencies_data.0}}

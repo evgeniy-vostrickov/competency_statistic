@@ -12,7 +12,7 @@ abstract class report_general {
   protected $date_end_stmp;
   protected $GRAY_COLOR = '#95a5a6';
   protected $NOT_COMPETENCIES = 'Нет освоенных компетенций';
-  protected $NOT_DONE = 'Не выполнено';
+  protected $NOT_DONE = 'Не освоено';
 
   protected function generateRandomColors($count)
   {
