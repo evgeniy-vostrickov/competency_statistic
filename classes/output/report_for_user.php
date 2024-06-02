@@ -264,7 +264,7 @@ class report_for_user extends report_general implements renderable, templatable 
             $dates_labels[] = $dt->format("Y-m-d");
         }
 
-        $end->modify('-10 days');
+        $end->modify('-9 days');
         $period = new DatePeriod($begin, $interval, $end);
 
         // Перебираем даты формирования подкомпетенций в модулях (на каждом цикле берется массив дат закрытия модулей).
