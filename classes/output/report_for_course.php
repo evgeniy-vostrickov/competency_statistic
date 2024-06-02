@@ -9,6 +9,7 @@ use templatable;
 use renderer_base;
 use stdClass;
 use core_competency\api;
+use grade_grade;
 use grade_item;
 
 class report_for_course implements renderable, templatable {
@@ -57,6 +58,28 @@ class report_for_course implements renderable, templatable {
         // Список пользователей курса.
         $users = get_enrolled_users($this->context, 'moodle/competency:coursecompetencygradable', $currentgroup, 'u.*', null, 0, 0, $showonlyactiveenrol);
 
+        $params = array('id' => $course_id);
+        $course = $DB->get_record('course', $params);
+
+        // Получаем секции курса
+        $modinfo = get_fast_modinfo($course);
+        $sections = $modinfo->get_sections();
+
+        $cm_array = array();
+
+        // Проходим по секциям и получаем модули
+        foreach ($sections as $section) {
+            foreach ($section as $cmid) {
+                $cm = $modinfo->cms[$cmid];
+                if ($cm->uservisible && $cm->modname !== 'label') {
+                    $grade_items = grade_item::fetch_all(['iteminstance' => $cm->instance, 'itemmodule' => $cm->modname]);
+                    if ($grade_items) {
+                        $cm_array[$cmid] = $cm;
+                    }
+                }
+            }
+        }
+        
         $students = [];
 
         foreach ($users as $user) {
@@ -103,39 +126,22 @@ class report_for_course implements renderable, templatable {
 
             $total_modules = 0;
             $success_modules = 0;
-            
-            $params = array('id' => $course_id);
-            $course = $DB->get_record('course', $params);
 
-            // Получаем секции курса
-            $modinfo = get_fast_modinfo($course);
-            $sections = $modinfo->get_sections();
+            foreach ($cm_array as $cmid => $cm) {
+                // Получение завершенного студентом модуля нашего курса.
+                $completion = $DB->get_record("course_modules_completion", array("coursemoduleid" => $cmid, "userid" => $user->id));
+                $total_modules += 1;
 
-            // Проходим по секциям и получаем модули
-            foreach ($sections as $section) {
-                foreach ($section as $cmid) {
-                    $cm = $modinfo->cms[$cmid];
-                    if ($cm->uservisible && $cm->modname !== 'label') {
-                        $grade_items = grade_item::fetch_all(['iteminstance' => $cm->instance, 'itemmodule' => $cm->modname]);
-                        if ($grade_items) {
-                            // Получение завершенного студентом модуля нашего курса.
-                            $completion = $DB->get_record("course_modules_completion", array("coursemoduleid" => $cmid, "userid" => $user->id));
-                            $total_modules += 1;
-
-                            // Если такой модуль есть в списке завершенных .
-                            if (!empty($completion) && $completion->completionstate == "1") {
-                                $success_modules += 1;
-                            } else {
-                                $cm = $modinfo->get_cm($cmid); // Получает один объект модуля курса.
-                                $grades = grade_get_grades($course_id, 'mod', $cm->modname, $cm->instance, $user->id); //Возвращает информацию об оценках.
-                                $item_grades = $grades->items[0]->grades; // Получаем массив оценок (хотя там она всегда одна).
-                                // Проверяем существует ли оценка за данный модуль.
-                                if (!empty($grades) && count($grades->items) > 0 && count($grades->items[0]->grades) > 0 && $item_grades[array_keys($item_grades)[0]]->grade != null) {
-                                    $success_modules += 1;
-                                }
-
-                            }
-                        }
+                // Если такой модуль есть в списке завершенных .
+                if (!empty($completion) && $completion->completionstate == "1") {
+                    $success_modules += 1;
+                } else {
+                    $cm = $modinfo->get_cm($cmid); // Получает один объект модуля курса.
+                    $grades = grade_get_grades($course_id, 'mod', $cm->modname, $cm->instance, $user->id); //Возвращает информацию об оценках.
+                    $item_grades = $grades->items[0]->grades; // Получаем массив оценок (хотя там она всегда одна).
+                    // Проверяем существует ли оценка за данный модуль.
+                    if (!empty($grades) && count($grades->items) > 0 && count($grades->items[0]->grades) > 0 && $item_grades[array_keys($item_grades)[0]]->grade != null) {
+                        $success_modules += 1;
                     }
                 }
             }
