@@ -132,20 +132,15 @@ class report_for_course implements renderable, templatable {
                 $completion = $DB->get_record("course_modules_completion", array("coursemoduleid" => $cmid, "userid" => $user->id));
                 $total_modules += 1;
 
-                            // Если такой модуль есть в списке завершенных .
-                            if (!empty($completion) && $completion->completionstate == "1") {
-                                $success_modules += 1;
-                            } else {
-                                $cm = $modinfo->get_cm($cmid); // Получает один объект модуля курса.
-                                $grades = grade_get_grades($course_id, 'mod', $cm->modname, $cm->instance, $user->id); //Возвращает информацию об оценках.
-                                $item_grades = $grades->items[0]->grades; // Получаем массив оценок (хотя там она всегда одна).
-                                // Проверяем существует ли оценка за данный модуль.
-                                if (!empty($grades) && count($grades->items) > 0 && count($grades->items[0]->grades) > 0 && $item_grades[array_keys($item_grades)[0]]->grade != null) {
-                                    $success_modules += 1;
-                                }
-
-                            }
-                        }
+                // Если такой модуль есть в списке завершенных .
+                if (!empty($completion) && $completion->completionstate == "1") {
+                    $success_modules += 1;
+                } else {
+                    $grades = grade_get_grades($course_id, 'mod', $cm->modname, $cm->instance, $user->id); //Возвращает информацию об оценках.
+                    $item_grades = $grades->items[0]->grades; // Получаем массив оценок (хотя там она всегда одна).
+                    // Проверяем существует ли оценка за данный модуль.
+                    if (!empty($grades) && count($grades->items) > 0 && count($grades->items[0]->grades) > 0 && $item_grades[array_keys($item_grades)[0]]->grade != null) {
+                        $success_modules += 1;
                     }
                 }
             }
