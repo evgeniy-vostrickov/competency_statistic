@@ -122,7 +122,7 @@ class report_for_course implements renderable, templatable {
             $student->link_all_courses = html_writer::link(new moodle_url('/report/competency_statistic/index.php', array('id' => $course_id, 'user_id' => $user->id, 'statistic_all_courses' => 1)), "Статистика по курсам");
             
             // Ссылка на полную статистику по ВСЕМ курсам.
-            $student->link_all_competencies = html_writer::link(new moodle_url('/report/competency_statistic/index.php', array('id' => $course_id, 'user_id' => $user->id, 'statistic_all_competencies' => 1)), "Все компетенции");
+            $student->link_all_competencies = html_writer::link(new moodle_url('/report/competency_statistic/index.php', array('id' => $course_id, 'user_id' => $user->id, 'statistic_all_competencies' => 1)), "Освоенные компетенции");
 
             $total_modules = 0;
             $success_modules = 0;
@@ -157,10 +157,11 @@ class report_for_course implements renderable, templatable {
             $students[] = $student;
         }
 
+        $helpicon_statistic = $OUTPUT->help_icon('statistic', 'report_competency_statistic', 'Подробнее');
+        
+        $data->helpicon_statistic = $helpicon_statistic;
         $data->students = $students;
 
         return $data;
     }
-
-
 }

@@ -1,4 +1,4 @@
-<h3>Выполнение заданий по компетенциям</h3>
+<h3>Выполнение заданий по компетенциям {{{helpicon_statistic_for_course}}}</h3>
 <!--{{^date_start}}<a href="#" id="choose_dates">Указать период</a>{{/date_start}}
 <div id="dates" style="{{^date_start}}display: none;{{/date_start}}">
     <form>
@@ -33,6 +33,17 @@
                 hoverOffset: 10
             }]
         },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label;
+                        }
+                    }
+                }
+            }
+        }
     });
 </script>
 <script>
@@ -113,8 +124,9 @@
     </ul>
     <br/>
 {{/competencies_data}}
+<div class="unfinished-competencies">
 {{#competencies_data_unfinished.0}}
-<h3>Задания, которые следует выполнить:</h3>
+<h3 class="text-color-red">Задания, которые следует выполнить:</h3>
 <br/>
 {{/competencies_data_unfinished.0}}
 {{#competencies_data_unfinished}}
@@ -125,3 +137,4 @@
         {{/modules}}
     </ul>
 {{/competencies_data_unfinished}}
+</div>

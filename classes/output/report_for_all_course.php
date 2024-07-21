@@ -41,7 +41,7 @@ class report_for_all_course extends report_general implements renderable, templa
      * @return stdClass
      */
     public function export_for_template(renderer_base $output) {
-        global $DB;
+        global $DB, $OUTPUT;
 
         $data = new stdClass();
 
@@ -137,6 +137,9 @@ class report_for_all_course extends report_general implements renderable, templa
         $data->labels = $labels;
         $data->chart_data = $chart_data;
         $data->competencies_data = $competencies_data;
+
+        $helpicon_statistic = $OUTPUT->help_icon('statistic_for_all_course', 'report_competency_statistic', 'Подробнее');
+        $data->helpicon_statistic_for_all_course = $helpicon_statistic;
 
         return $data;
     }

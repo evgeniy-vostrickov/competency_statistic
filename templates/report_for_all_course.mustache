@@ -1,4 +1,4 @@
-<h3>Сформированные компетенции по всем курсам</h3>
+<h3>Сформированные компетенции по всем курсам {{{helpicon_statistic_for_all_course}}}</h3>
 <!--{{^date_start}}<a href="#" id="choose_dates">Указать период</a>{{/date_start}}
 <div id="dates" style="{{^date_start}}display: none;{{/date_start}}">
     <form>
@@ -29,6 +29,17 @@
                 hoverOffset: 10
             }]
         },
+        options: {
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.label;
+                        }
+                    }
+                }
+            }
+        }
     });
 </script>
 <br/>

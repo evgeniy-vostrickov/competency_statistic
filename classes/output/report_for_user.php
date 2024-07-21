@@ -49,7 +49,7 @@ class report_for_user extends report_general implements renderable, templatable 
      * @return stdClass
      */
     public function export_for_template(renderer_base $output) {
-        global $DB;
+        global $DB, $OUTPUT;
 
         $data = new stdClass();
         $data->courseid = $this->course_id;
@@ -150,6 +150,9 @@ class report_for_user extends report_general implements renderable, templatable 
         $buf = $this->get_completed_modules_dates($usercompetencycourses, $currentuser, $modinfo, $course_id, $DB, $COLORS);
         $data->competencies_dates = $buf[0];
         $data->dates_labels = json_encode($buf[1]);
+
+        $helpicon_statistic = $OUTPUT->help_icon('statistic_for_course', 'report_competency_statistic', 'Подробнее');
+        $data->helpicon_statistic_for_course = $helpicon_statistic;
 
         return $data;
     }

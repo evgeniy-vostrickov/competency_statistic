@@ -1,55 +1,64 @@
 /* Список компетенций */
 .rounded {
-	counter-reset: li;
-	list-style: none;
-	font: 14px "Trebuchet MS", "Lucida Sans";
-	padding: 0;
-	text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
-	margin-left: 1rem;
+  counter-reset: li;
+  list-style: none;
+  font: 14px "Trebuchet MS", "Lucida Sans";
+  padding: 0;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  margin-left: 1rem;
 }
 
 .rounded span {
-	position: relative;
-	display: inline-block;
-	padding: .4em .4em .4em 2em;
-	margin: .5em 0;
-	color: #444;
-	text-decoration: none;
-	border-radius: .3em;
-	transition: .3s ease-out;
+  position: relative;
+  display: inline-block;
+  padding: 0.4em 0.4em 0.4em 2em;
+  margin: 0.5em 0;
+  color: #444;
+  text-decoration: none;
+  border-radius: 0.3em;
+  transition: 0.3s ease-out;
 }
 
 .rounded span:hover {
-	cursor: pointer;
-	background: #E9E4E0;
+  cursor: pointer;
+  background: #e9e4e0;
 }
 
 .rounded span:hover:before {
-	transform: rotate(360deg);
+  transform: rotate(360deg);
 }
 
 .rounded span:before {
-	content: counter(li);
-	counter-increment: li;
-	position: absolute;
-	left: -1.3em;
-	top: 50%;
-	margin-top: -1.3em;
-	background: #8FD4C1;
-	height: 2.5em;
-	width: 2.5em;
-	line-height: 2em;
-	border: .3em solid white;
-	text-align: center;
-	font-weight: bold;
-	border-radius: 2em;
-	transition: all .3s ease-out;
+  content: counter(li);
+  counter-increment: li;
+  position: absolute;
+  left: -1.3em;
+  top: 50%;
+  margin-top: -1.3em;
+  background: #8fd4c1;
+  height: 2.5em;
+  width: 2.5em;
+  line-height: 2em;
+  border: 0.3em solid white;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 2em;
+  transition: all 0.3s ease-out;
 }
 
 .chart-wrapper {
-	display: flex;
+  display: flex;
+}
+
+.unfinished-competencies h3,
+.unfinished-competencies h4,
+.unfinished-competencies a {
+  color: red !important;
+  font-weight: 500 !important;
 }
 
 @media (max-width: 1024px) {
-	.chart-wrapper { flex-wrap: wrap; }
+  .chart-wrapper {
+    flex-wrap: wrap;
+  }
 }

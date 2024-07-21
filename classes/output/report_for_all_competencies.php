@@ -36,7 +36,7 @@ class report_for_all_competencies extends report_general implements renderable, 
      * @return stdClass
      */
     public function export_for_template(renderer_base $output) {
-        global $DB;
+        global $DB, $OUTPUT;
 
         $data = new stdClass();
         
@@ -55,7 +55,7 @@ class report_for_all_competencies extends report_general implements renderable, 
 
         if (count($my_list_competency) != 0) {
           for($i = 0; $i < count($my_list_competency); $i++) {
-            $usercompetencycourses[$i] = mb_strimwidth($my_list_competency[$i]->competency, 0, 100, "...");
+            $usercompetencycourses[$i] = mb_strimwidth($my_list_competency[$i]->competency, 0, 100, "...") . " (дисциплин: " . $my_list_competency[$i]->count_discipline . ")";
             $chart_data[$i] = (int)$my_list_competency[$i]->score;
           }
   
@@ -77,6 +77,9 @@ class report_for_all_competencies extends report_general implements renderable, 
         $data->labels = $labels;
         $data->chart_data = $chart_data;
         $data->my_list_competency = $my_list_competency;
+
+        $helpicon_statistic = $OUTPUT->help_icon('statistic_for_all_competencies', 'report_competency_statistic', 'Подробнее');
+        $data->helpicon_statistic_for_all_course = $helpicon_statistic;
 
         return $data;
     }
